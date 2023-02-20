@@ -32,21 +32,33 @@ namespace webuhelp
                     switch (command)
                     {
                         case "-n":
+
+                            Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Koop - Marika Lübbers {Environment.NewLine}");                            
+
                             break;
+
                         case "-i":
+
+                            Import Import = new Import();
+                            Import.CreateDB();
+                            //TODO: Import aus Vezeichnis von Excel Dateien in die Datenbank
+
                             break;
+
                         case "-e":
                             if (!existingData)
                             {
                                 NoData();
                             }
                             break;
+
                         case "-s":
                             if (!existingData)
                             {
                                 NoData();
                             }
                             break;
+
                         default:
                             WriteLegalCommands();
                             break;
