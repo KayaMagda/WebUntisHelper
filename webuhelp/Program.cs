@@ -5,7 +5,6 @@ namespace webuhelp
 {
     internal class Program
     {
-        private static List<string> _developers = new List<string>() { "Marika Lübbers", "Annika Schäfer", "Kaya Kopp"};
         private static Dictionary <string, string> _legalCommands = new Dictionary<string, string>()
         {
             ["-n"] = "Gibt die Namen aller Projektbeteiligten aus.",
@@ -78,6 +77,11 @@ namespace webuhelp
                 command += Console.ReadLine();
             }
             
+        }
+
+        private static void ExportClassSummary()
+        {
+            //Microsoft Office Interop Excel
         }
 
         private static void WriteLegalCommands()

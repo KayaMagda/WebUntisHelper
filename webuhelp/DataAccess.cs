@@ -3,7 +3,7 @@ using System.Data.SQLite;
 
 namespace webuhelp
 {
-    internal class DataAccess
+    public class DataAccess
     {
         private static SQLiteConnection GetOpenConnection()
         {
