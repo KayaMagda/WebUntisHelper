@@ -21,7 +21,7 @@ namespace webuhelp
             return reader.GetInt32(index);
         }
 
-        public List<PupilRow> GetSummaryData()
+        public static List<PupilRow> GetSummaryData()
         {
             var query = @"SELECT
                             P.name,
@@ -77,6 +77,22 @@ namespace webuhelp
                 }
             }
             return rowList;
+        }
+
+        public static string GetClassName()
+        {
+            var query = @"SELECT
+                            klasse
+                          FROM Pupil LIMIT 1;";
+
+            using (var connection = GetOpenConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    return (string) command.ExecuteScalar();                   
+                }
+            }
         }
     }
 }
