@@ -52,30 +52,27 @@ namespace webuhelp
 
             var rowList = new List<PupilRow>();
 
-            using (var connection = GetOpenConnection())
-            {
-                using (var command = connection.CreateCommand())
-                {
+            using var connection = GetOpenConnection();
+
+            using var command = connection.CreateCommand();                
                     command.CommandText = query;
+
+            using var reader = command.ExecuteReader();
                     
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var row = new PupilRow();
+            while (reader.Read())
+            {
+                var row = new PupilRow();
 
-                            row.Name = reader.GetString(0);
-                            row.FirstName= reader.GetString(1);
-                            row.A = GetIntNullable(reader, 2) ?? 0;
-                            row.N = GetIntNullable(reader, 3) ?? 0;
-                            row.B = GetIntNullable(reader, 4) ?? 0;
-                            row.V = GetIntNullable(reader, 5) ?? 0;
+                row.Name = reader.GetString(0);
+                row.FirstName= reader.GetString(1);
+                row.A = GetIntNullable(reader, 2) ?? 0;
+                row.N = GetIntNullable(reader, 3) ?? 0;
+                row.B = GetIntNullable(reader, 4) ?? 0;
+                row.V = GetIntNullable(reader, 5) ?? 0;
 
-                            rowList.Add(row);
-                        }
-                    }
-                }
-            }
+                rowList.Add(row);
+            }            
+            
             return rowList;
         }
 
@@ -85,14 +82,12 @@ namespace webuhelp
                             klasse
                           FROM Pupil LIMIT 1;";
 
-            using (var connection = GetOpenConnection())
-            {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = query;
-                    return (string) command.ExecuteScalar();                   
-                }
-            }
+            using var connection = GetOpenConnection();
+
+            using var command = connection.CreateCommand();
+                
+            command.CommandText = query;
+            return (string) command.ExecuteScalar();              
         }
     }
 }
