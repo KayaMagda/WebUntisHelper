@@ -37,11 +37,36 @@ namespace webuhelp
 
             if (IsNewDataBase)
             {
-                sql = "CREATE TABLE Pupil (name VARCHAR(15), vorname VARCHAR(20), schuelerID INTEGER, klasse VARCHAR(10)); CREATE TABLE Absence (status VARCHAR(30), datum DATETIME, stundennr INTEGER, lehrkraft VARCHAR(4), fach VARCHAR(4), fehlminute INTEGER, grund VARCHAR(50), entschuldigungstext VARCHAR(20), text VARCHAR(50) )";
+                sql = @"CREATE TABLE Pupil
+                        (
+                        name VARCHAR(15), 
+                        vorname VARCHAR(20), 
+                        schuelerID INTEGER PRIMARY KEY, 
+                        klasse VARCHAR(10)
+                        );
+
+                        CREATE TABLE Absence
+                        (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        status VARCHAR(30), 
+                        datum DATETIME,
+                        stundennr INTEGER,
+                        lehrkraft VARCHAR(4),
+                        fach VARCHAR(4),
+                        fehlminute INTEGER,
+                        grund VARCHAR(50),
+                        entschuldigungstext VARCHAR(20),
+                        text VARCHAR(50),
+                        a_schuelerID INTEGER,
+                        FOREIGN KEY (a_schuelerID) 
+                        REFERENCES Pupil (schuelerID) 
+                        );";
 
                 command = new SQLiteCommand(sql, m_dbConnection);
                 command.ExecuteNonQuery();
             }
+
+            m_dbConnection.Close();
         }
 
     }
