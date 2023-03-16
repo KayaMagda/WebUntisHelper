@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
 
@@ -42,6 +43,7 @@ namespace webuhelp
                                 Import Import = new Import();
                                 Import.CreateDB();
                                 //TODO: Import aus Vezeichnis von Excel Dateien in die Datenbank
+                                existingData = true;
                             }
                             break;
 
@@ -117,19 +119,18 @@ namespace webuhelp
                     var row = 1;
                     foreach (PupilData data in rowList[i].Data)
                     {
-                        row++;
-
-                        while (row <= rowList[i].Data.Count)
+                        if (row <= rowList[i].Data.Count)
                         {
+                            row++;
+
                             activeSheet.Cells[row, "A"] = rowList[i].GetFullNameGermanBurocratic();
                             activeSheet.Cells[row, "B"] = rowList[i].ID;
                             activeSheet.Cells[row, "C"] = rowList[i].Class;
 
-
                             if (data.IsExcused) activeSheet.Cells[row, "D"] = "entsch.";
                             else
                             {
-                                activeSheet.Cells[row, "D"].Font.Color = "Color.Red"; // falls nicht funktioniert: "255, 0, 0"
+                                activeSheet.Cells[row, "D"].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red); // falls nicht funktioniert: "255, 0, 0"
                                 activeSheet.Cells[row, "D"] = "nicht entsch.";
                             }
 

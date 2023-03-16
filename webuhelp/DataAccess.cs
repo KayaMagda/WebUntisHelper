@@ -49,7 +49,7 @@ namespace webuhelp
                                 WHERE A.grund = 'Verspätet'
                              ) AS late
                             FROM Pupil P
-                            JOIN Absence A ON A.schuelerID = P.schuelerID                                
+                            JOIN Absence A ON A.schuelerID = P.schuelerID
                             ;";
 
             var rowList = new List<Pupil>();
@@ -69,6 +69,7 @@ namespace webuhelp
                 row.LastName = reader.GetString(1);
                 row.FirstName = reader.GetString(2);
                 row.Class = reader.GetString(3);
+                row.Data = new List<PupilData> ();
                 row.A = GetIntNullable(reader, 4) ?? 0;
                 row.N = GetIntNullable(reader, 5) ?? 0;
                 row.B = GetIntNullable(reader, 6) ?? 0;
@@ -112,8 +113,8 @@ namespace webuhelp
                     var row = new PupilData();
 
                     row.IsExcused = (reader.GetString(0).ToLower().Trim() == "entsch.") ? true : false;
-                    row.Date = reader.GetDateTime(1).ToString("dd.MM.yyyy");
-                    row.Weekday = reader.GetDateTime(1).ToString("ddd").Substring(0, 2) + ".";
+                    row.Date = "";//reader.GetDateTime(1).ToString("dd.MM.yyyy");
+                    row.Weekday = ""; //reader.GetDateTime(1).ToString("ddd").Substring(0, 2) + ".";
                     row.LessonNr = reader.GetInt32(2);
                     row.Teacher = reader.GetString(3);
                     row.Lesson = reader.GetString(4);

@@ -51,8 +51,8 @@ namespace webuhelp
                         grund VARCHAR(50),
                         entschuldigungstext VARCHAR(20),
                         text VARCHAR(50),
-                        a_schuelerID INTEGER,
-                        FOREIGN KEY (a_schuelerID) 
+                        schuelerID INTEGER,
+                        FOREIGN KEY (schuelerID) 
                         REFERENCES Pupil (schuelerID) 
                         );";
 
