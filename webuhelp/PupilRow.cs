@@ -1,6 +1,4 @@
-﻿
-
-namespace webuhelp
+﻿namespace webuhelp
 {
     public class PupilRow
     {

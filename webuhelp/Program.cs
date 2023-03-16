@@ -32,35 +32,37 @@ namespace webuhelp
                     switch (command)
                     {
                         case "-n":
-
-                            Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Koop - Marika Lübbers {Environment.NewLine}");                            
-
+                            {
+                                Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Koop - Marika Lübbers {Environment.NewLine}");
+                            }
                             break;
 
                         case "-i":
-
-                            Import Import = new Import();
-                            Import.CreateDB();
-                            //TODO: Import aus Vezeichnis von Excel Dateien in die Datenbank
-
+                            {
+                                Import Import = new Import();
+                                Import.CreateDB();
+                                //TODO: Import aus Vezeichnis von Excel Dateien in die Datenbank
+                            }
                             break;
 
                         case "-e":
-                            if (!existingData)
                             {
-                                NoData();
+                                if (!existingData) NoData();
+                                else ExportStudentSummary();
                             }
                             break;
 
                         case "-s":
-                            if (!existingData)
                             {
-                                NoData();
+                                if (!existingData) NoData();
+                                else ExportClassSummary();
                             }
                             break;
 
                         default:
-                            WriteLegalCommands();
+                            {
+                                WriteLegalCommands();
+                            }
                             break;
                     }
                 }
@@ -80,6 +82,112 @@ namespace webuhelp
             
         }
 
+        private static void ExportStudentSummary()
+        {
+            var rowList = DataAccess.GetPersonData();
+
+            for (int i = 0; i < rowList.Count; i++)
+            {
+                try
+                {
+                    var activeSheet = GetActiveWorksheet();
+                    if (activeSheet == null)
+                    {
+                        Console.WriteLine("Excel ist nicht korrekt installiert, es kann kein Excel Export durchgeführt werden.");
+                        return;
+                    }
+                    
+
+                    activeSheet.Cells[1, "A"] = "name";
+                    activeSheet.Cells[1, "B"] = "id";
+                    activeSheet.Cells[1, "C"] = "klasse";
+                    activeSheet.Cells[1, "D"] = "status";
+                    activeSheet.Cells[1, "E"] = "datum";
+                    activeSheet.Cells[1, "F"] = "wochentag";
+                    activeSheet.Cells[1, "G"] = "stundennr";
+                    activeSheet.Cells[1, "H"] = "lehrkraft";
+                    activeSheet.Cells[1, "I"] = "fach";
+                    activeSheet.Cells[1, "J"] = "fehlstunden";
+                    activeSheet.Cells[1, "K"] = "fehlminuten";
+                    activeSheet.Cells[1, "L"] = "grund";
+                    activeSheet.Cells[1, "M"] = "entschuldigungstext";
+                    activeSheet.Cells[1, "N"] = "text";
+
+                    string personName = "";
+                    var row = 1;
+                    foreach (PupilData data in rowList[i].Data)
+                    {
+                        row++;
+
+                        while (row <= rowList[i].Data.Count)
+                        {
+                            activeSheet.Cells[row, "A"] = rowList[i].GetFullNameGermanBurocratic();
+                            activeSheet.Cells[row, "B"] = rowList[i].ID;
+                            activeSheet.Cells[row, "C"] = rowList[i].Class;
+
+
+                            if (data.IsExcused) activeSheet.Cells[row, "D"] = "entsch.";
+                            else
+                            {
+                                activeSheet.Cells[row, "D"].Font.Color = "Color.Red"; // falls nicht funktioniert: "255, 0, 0"
+                                activeSheet.Cells[row, "D"] = "nicht entsch.";
+                            }
+
+                            activeSheet.Cells[row, "E"] = data.Date;
+                            activeSheet.Cells[row, "F"] = data.Weekday;
+                            activeSheet.Cells[row, "G"] = data.LessonNr;
+                            activeSheet.Cells[row, "H"] = data.Teacher;
+                            activeSheet.Cells[row, "I"] = data.Lesson;
+                            activeSheet.Cells[row, "J"] = data.MissingHour;
+                            activeSheet.Cells[row, "K"] = data.MissingMinute;
+                            activeSheet.Cells[row, "L"] = data.Reason;
+                            activeSheet.Cells[row, "M"] = data.MissingText;
+                            activeSheet.Cells[row, "N"] = data.Text;
+                        }
+
+                        if (row >= rowList[i].Data.Count)
+                        {
+                            personName = rowList[i].GetFileName();
+
+                            activeSheet.Cells[row + 1, "A"] = "A";
+                            activeSheet.Cells[row + 2, "A"] = "N";
+                            activeSheet.Cells[row + 3, "A"] = "B";
+                            activeSheet.Cells[row + 4, "A"] = "V";
+
+                            activeSheet.Cells[row + 1, "B"] = rowList[i].A;
+                            activeSheet.Cells[row + 2, "B"] = rowList[i].N;
+                            activeSheet.Cells[row + 3, "B"] = rowList[i].B;
+                            activeSheet.Cells[row + 4, "B"] = rowList[i].V;
+                        }
+                    }
+
+                    activeSheet.Columns[1].AutoFit();
+                    activeSheet.Columns[2].AutoFit();
+                    activeSheet.Columns[3].AutoFit();
+                    activeSheet.Columns[4].AutoFit();
+                    activeSheet.Columns[5].AutoFit();
+                    activeSheet.Columns[6].AutoFit();
+                    activeSheet.Columns[7].AutoFit();
+                    activeSheet.Columns[8].AutoFit();
+                    activeSheet.Columns[9].AutoFit();
+                    activeSheet.Columns[10].AutoFit();
+                    activeSheet.Columns[11].AutoFit();
+                    activeSheet.Columns[12].AutoFit();
+                    activeSheet.Columns[13].AutoFit();
+                    activeSheet.Columns[14].AutoFit();
+
+                    var fileName = personName + ".xlsx";
+
+                    activeSheet.SaveAs(fileName);
+                    Console.WriteLine($"Die Datei {fileName} wurde erfolgreich exportiert.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Es gab einen Fehler beim Exportieren der Einzeldateien, bitte versuchen Sie es nochmal.");
+                }
+            }
+
+        }
         private static void ExportClassSummary()
         {
             try
