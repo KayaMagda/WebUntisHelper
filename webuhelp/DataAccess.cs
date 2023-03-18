@@ -21,6 +21,15 @@ namespace webuhelp
             return reader.GetInt32(index);
         }
 
+        private static string? GetStringNullable(SQLiteDataReader reader, int index)
+        {
+            if (reader.IsDBNull(index))
+            {
+                return null;
+            }
+            return reader.GetString(index);
+        }
+
         public static List<Pupil> GetPersonData()
         {
             var query = @"SELECT
@@ -30,26 +39,29 @@ namespace webuhelp
                             P.klasse,
                             (
                                 SELECT
-                                COUNT(*) 
-                                WHERE A.status = 'entsch.'
+                                COUNT(*)
+                                FROM Absence A
+                                WHERE A.status = 'entsch.' AND A.schuelerID = P.schuelerID
                              ) AS excused,
                              (
                                 SELECT
                                 COUNT(*)
-                                WHERE A.status = 'nicht entsch.'
+                                FROM Absence A
+                                WHERE A.status = 'nicht entsch.' AND A.schuelerID = P.schuelerID
                              ) AS not_excused,
                              (
                                 SELECT
                                 COUNT(*)
-                                WHERE A.entschuldigungstext = 'B'
+                                FROM Absence A
+                                WHERE A.entschuldigungstext = 'B' AND A.schuelerID = P.schuelerID
                              ) AS work_related,
                              (
                                 SELECT
                                 COUNT(*)
-                                WHERE A.grund = 'Verspätet'
+                                FROM Absence A
+                                WHERE A.grund = 'Verspätet' AND A.schuelerID = P.schuelerID
                              ) AS late
                             FROM Pupil P
-                            JOIN Absence A ON A.schuelerID = P.schuelerID
                             ;";
 
             var rowList = new List<Pupil>();
@@ -119,10 +131,10 @@ namespace webuhelp
                     row.Teacher = reader.GetString(3);
                     row.Lesson = reader.GetString(4);
                     row.MissingHour = (45 - reader.GetInt32(5) == 0) ? 1 : 0;
-                    row.MissingMinute = (45 - reader.GetInt32(5) == 0) ? 0 : reader.GetInt32(5); // TODO: Herr Gutt fragen ob bei kompletter Stunde jetzt 0 oder nicht??
+                    row.MissingMinute = reader.GetInt32(5); 
                     row.Reason = reader.GetString(6);
-                    row.MissingText = reader.GetString(7);
-                    row.Text = reader.GetString(8);
+                    row.MissingText = GetStringNullable(reader, 7);
+                    row.Text = GetStringNullable(reader, 8);
 
                     rowList[i].Data.Add(row);
                 }
@@ -139,25 +151,28 @@ namespace webuhelp
                             (
                                 SELECT
                                 COUNT(*) 
-                                WHERE A.status = 'entsch.'
+                                FROM Absence A
+                                WHERE A.status = 'entsch.' AND A.schuelerID = P.schuelerID
                              ) AS excused,
                              (
                                 SELECT
                                 COUNT(*)
-                                WHERE A.status = 'nicht entsch.'
+                                FROM Absence A
+                                WHERE A.status = 'nicht entsch.' AND A.schuelerID = P.schuelerID
                              ) AS not_excused,
                              (
                                 SELECT
                                 COUNT(*)
-                                WHERE A.entschuldigungstext = 'B'
+                                FROM Absence A
+                                WHERE A.entschuldigungstext = 'B' AND A.schuelerID = P.schuelerID
                              ) AS work_related,
                              (
                                 SELECT
                                 COUNT(*)
-                                WHERE A.grund = 'Verspätet'
+                                FROM Absence A
+                                WHERE A.grund = 'Verspätet' AND AND A.schuelerID = P.schuelerID
                              ) AS late
                             FROM Pupil P
-                            JOIN Absence A ON A.schuelerID = P.schuelerID                                
                             ;";
 
             var rowList = new List<PupilRow>();

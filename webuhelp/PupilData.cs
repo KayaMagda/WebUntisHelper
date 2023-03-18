@@ -11,7 +11,7 @@
         public int MissingHour { get; set; }
         public int MissingMinute { get; set; }
         public string Reason { get; set; }
-        public string MissingText { get; set; }
-        public string Text { get; set; }
+        public string? MissingText { get; set; }
+        public string? Text { get; set; }
     }
 }
