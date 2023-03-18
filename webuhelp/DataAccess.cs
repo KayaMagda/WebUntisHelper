@@ -170,7 +170,7 @@ namespace webuhelp
                                 SELECT
                                 COUNT(*)
                                 FROM Absence A
-                                WHERE A.grund = 'Verspätet' AND AND A.schuelerID = P.schuelerID
+                                WHERE A.grund = 'Verspätet' AND A.schuelerID = P.schuelerID
                              ) AS late
                             FROM Pupil P
                             ;";
