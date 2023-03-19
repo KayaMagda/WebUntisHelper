@@ -42,7 +42,7 @@ namespace webuhelp
                             {
                                 Import Import = new Import();
                                 Import.CreateDB();
-                                //TODO: Import aus Vezeichnis von Excel Dateien in die Datenbank
+                                Import.ExcelImport();
                                 existingData = true;
                             }
                             break;
