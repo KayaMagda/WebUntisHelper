@@ -37,7 +37,7 @@ namespace webuhelp
                     {
                         case "-n":
                             {
-                                Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Koop - Marika Lübbers {Environment.NewLine}");
+                                Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Kopp - Marika Lübbers {Environment.NewLine}");
                             }
                             break;
 
