@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Office.Interop.Excel;
 
 namespace webuhelp
@@ -15,6 +16,8 @@ namespace webuhelp
             ["-s"] = "Automatisierter Export einer Zusammenfassung"
         };
         private static bool existingData = false;
+
+        private static string currentDirectory = Directory.GetCurrentDirectory();
 
         static void Main(string[] args)
         {
@@ -92,14 +95,16 @@ namespace webuhelp
             {
                 try
                 {
-                    var activeSheet = GetActiveWorksheet();
-                    if (activeSheet == null)
+                    var excelApp = new Application();
+                    if (excelApp == null)
                     {
                         Console.WriteLine("Excel ist nicht korrekt installiert, es kann kein Excel Export durchgeführt werden.");
                         return;
                     }
-                    
 
+                    excelApp.Workbooks.Add();
+                    _Worksheet activeSheet = (Worksheet)excelApp.ActiveSheet;
+                    
                     activeSheet.Cells[1, "A"] = "name";
                     activeSheet.Cells[1, "B"] = "id";
                     activeSheet.Cells[1, "C"] = "klasse";
@@ -130,7 +135,7 @@ namespace webuhelp
                             if (data.IsExcused) activeSheet.Cells[row, "D"] = "entsch.";
                             else
                             {
-                                activeSheet.Cells[row, "D"].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red); // falls nicht funktioniert: "255, 0, 0"
+                                activeSheet.Cells[row, "D"].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red); 
                                 activeSheet.Cells[row, "D"] = "nicht entsch.";
                             }
 
@@ -178,14 +183,17 @@ namespace webuhelp
                     activeSheet.Columns[14].AutoFit();
 
                     var fileName = personName + ".xlsx";
+                    var fullPath = currentDirectory + "\\" + fileName;
 
-                    activeSheet.SaveAs(fileName);
+                    activeSheet.SaveAs(fullPath);
+                    excelApp.Workbooks.Close();
+                    excelApp.Quit();
                     Console.WriteLine($"Die Datei {fileName} wurde erfolgreich exportiert.");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Es gab einen Fehler beim Exportieren der Einzeldateien, bitte versuchen Sie es nochmal.");
-                }
+                } 
             }
 
         }
@@ -193,12 +201,15 @@ namespace webuhelp
         {
             try
             {
-                var activeSheet = GetActiveWorksheet();
-                if (activeSheet == null)
+                var excelApp = new Application();
+                if (excelApp == null)
                 {
                     Console.WriteLine("Excel ist nicht korrekt installiert, es kann kein Excel Export durchgeführt werden.");
                     return;
                 }
+                excelApp.Workbooks.Add();
+                _Worksheet activeSheet = (Worksheet)excelApp.ActiveSheet;
+               
                 var rowList = DataAccess.GetSummaryData();
 
                 activeSheet.Cells[1, "A"] = "Name";
@@ -229,8 +240,11 @@ namespace webuhelp
 
                 var className = DataAccess.GetClassName();
                 var fileName = className + "_Zusammenfassung.xlsx";
+                var fullPath = currentDirectory + "\\" + fileName;
 
-                activeSheet.SaveAs(fileName);
+                activeSheet.SaveAs(fullPath);
+                excelApp.Workbooks.Close();
+                excelApp.Quit();
                 Console.WriteLine($"Die Datei {fileName} wurde erfolgreich erstellt.");
             }
             catch (Exception ex)
@@ -239,19 +253,7 @@ namespace webuhelp
             }
 
         }
-
-        private static _Worksheet? GetActiveWorksheet()
-        {
-            var excelApp = new Application();
-            if (excelApp == null)
-            {
-                return null;
-            }
-            excelApp.Visible = true;
-            excelApp.Workbooks.Add();
-            _Worksheet workSheet = (Worksheet)excelApp.ActiveSheet;
-            return workSheet;
-        }
+        
 
         private static void WriteLegalCommands()
         {
