@@ -11,9 +11,9 @@ namespace webuhelp
         private static Dictionary <string, string> _legalCommands = new Dictionary<string, string>()
         {
             ["-n"] = "Gibt die Namen aller Projektbeteiligten aus.",
-            ["-i"] = "Automatisierter Import aller Gesamtdateien im aktuellen Verzeichnis",
-            ["-e"] = "Automatisierter Export aller Einzeldateien",
-            ["-s"] = "Automatisierter Export einer Zusammenfassung"
+            ["-i"] = "Automatisierter Import aller Gesamtdateien im aktuellen Pogrammverzeichnis",
+            ["-e"] = "Automatisierter Export aller Einzeldateien in den Ordner ExportierteDateien",
+            ["-s"] = "Automatisierter Export einer Zusammenfassung in den Ordner ExportierteDateien"
         };
         private static bool existingData = false;
 
@@ -46,6 +46,7 @@ namespace webuhelp
                                 Import Import = new Import();
                                 Import.CreateDB();
                                 Import.ExcelImport();
+                                CreateFolder();
                                 existingData = true;
                             }
                             break;
@@ -85,6 +86,16 @@ namespace webuhelp
                 command += Console.ReadLine();
             }
             
+        }
+
+
+        public static void CreateFolder()
+        {
+            string folderpath = $"{currentDirectory}\\ExportierteDateien";
+            if (!Directory.Exists(folderpath))
+            {
+                Directory.CreateDirectory(folderpath);
+            }
         }
 
         private static void ExportStudentSummary()
@@ -181,9 +192,9 @@ namespace webuhelp
                     activeSheet.Columns[12].AutoFit();
                     activeSheet.Columns[13].AutoFit();
                     activeSheet.Columns[14].AutoFit();
-
+                                        
                     var fileName = personName + ".xlsx";
-                    var fullPath = currentDirectory + "\\" + fileName;
+                    var fullPath = currentDirectory + "\\ExportierteDateien" + "\\" + fileName;
 
                     activeSheet.SaveAs(fullPath);
                     excelApp.Workbooks.Close();
@@ -240,7 +251,7 @@ namespace webuhelp
 
                 var className = DataAccess.GetClassName();
                 var fileName = className + "_Zusammenfassung.xlsx";
-                var fullPath = currentDirectory + "\\" + fileName;
+                var fullPath = currentDirectory + "\\ExportierteDateien" + "\\" + fileName;
 
                 activeSheet.SaveAs(fullPath);
                 excelApp.Workbooks.Close();

@@ -161,23 +161,19 @@ namespace webuhelp
                         string entschtext = (string)Convert.ToString((range.Cells[count, 16] as Excel.Range).Value2);
                         string text = (string)Convert.ToString((range.Cells[count, 12] as Excel.Range).Value2);
 
-                        //sql = "SELECT schuelerID FROM Pupil";
-                        //command = new SQLiteCommand(sql, m_dbConnection);
-                        //int sql1 = command.ExecuteNonQuery();
-                        //if (sql1 > 0)
-                        //{
-                            if (range.Cells[count, 1].value2 != range.Cells[count + 1, 1].value2)
-                            {
-                                sql = "Insert into Pupil(name, vorname, schuelerID, klasse) VALUES('" + name + "','" + vorname + "'," + SchuelerID + ",'" + Klasse + "')";
+                        
+                        if (range.Cells[count, 1].value2 != range.Cells[count + 1, 1].value2)
+                        {
+                            sql = "INSERT OR IGNORE INTO Pupil(name, vorname, schuelerID, klasse) VALUES('" + name + "','" + vorname + "'," + SchuelerID + ",'" + Klasse + "')";
 
-                                command = new SQLiteCommand(sql, m_dbConnection);
-                                command.ExecuteNonQuery();
+                            command = new SQLiteCommand(sql, m_dbConnection);
+                            command.ExecuteNonQuery();
 
-                            }
-                        //}
+                        }
+                        
                         
 
-                        sql = @"Insert into Absence(status, datum, stundennr, lehrkraft, fach, fehlminute, grund, entschuldigungstext, text, schuelerID)
+                        sql = @"INSERT OR IGNORE INTO Absence(status, datum, stundennr, lehrkraft, fach, fehlminute, grund, entschuldigungstext, text, schuelerID)
                                 VALUES('" + status + "','" + datum + "'," + stundennr + ",'" + lehrkraft + "','" + fach + "'," + fehlminute + ",'" + grund + "','" + entschtext + "','" + text + "'," + SchuelerID + ")";
 
                         command = new SQLiteCommand(sql, m_dbConnection);

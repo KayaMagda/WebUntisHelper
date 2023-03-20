@@ -125,8 +125,8 @@ namespace webuhelp
                     var row = new PupilData();
 
                     row.IsExcused = (reader.GetString(0).ToLower().Trim() == "entsch.") ? true : false;
-                    row.Date = "";//reader.GetDateTime(1).ToString("dd.MM.yyyy");
-                    row.Weekday = ""; //reader.GetDateTime(1).ToString("ddd").Substring(0, 2) + ".";
+                    row.Date = reader.GetDateTime(1).ToString("dd.MM.yyyy");
+                    row.Weekday = reader.GetDateTime(1).ToString("ddd").Substring(0, 2) + ".";
                     row.LessonNr = reader.GetInt32(2);
                     row.Teacher = reader.GetString(3);
                     row.Lesson = reader.GetString(4);
