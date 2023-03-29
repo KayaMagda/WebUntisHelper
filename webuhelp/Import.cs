@@ -113,7 +113,7 @@ namespace webuhelp
 
             if (ExcelFiles.Length <= 0)
             {
-                Console.WriteLine($"Es konnte keine Excel-Datei im Pogrammpfad ({Programpath}) gefunden werden.");
+                throw new Exception($"Es konnte keine Excel-Datei im Pogrammpfad ({Programpath}) gefunden werden.");
             }
             else
             {
@@ -185,7 +185,6 @@ namespace webuhelp
                     Console.WriteLine($"Die Datei {Path.GetFileName(file)} wurde erfolgreich importiert.");
                     m_dbConnection.Close();
                 }
-
 
             }
 

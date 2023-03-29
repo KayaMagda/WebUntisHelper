@@ -6,7 +6,7 @@ using Microsoft.Office.Interop.Excel;
 
 namespace webuhelp
 {
-    internal class Program
+    public class Program
     {
         private static Dictionary <string, string> _legalCommands = new Dictionary<string, string>()
         {
@@ -15,7 +15,7 @@ namespace webuhelp
             ["-e"] = "Automatisierter Export aller Einzeldateien in den Ordner ExportierteDateien",
             ["-s"] = "Automatisierter Export einer Zusammenfassung in den Ordner ExportierteDateien"
         };
-        private static bool existingData = false;
+        public static bool existingData = false;
 
         private static string currentDirectory = Directory.GetCurrentDirectory();
 
@@ -37,17 +37,25 @@ namespace webuhelp
                     {
                         case "-n":
                             {
-                                Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Kop - Marika Lübbers {Environment.NewLine}");
+                                Console.WriteLine($"{Environment.NewLine}Annika Schäfer - Kaya Koop - Marika Lübbers {Environment.NewLine}");
                             }
                             break;
 
                         case "-i":
                             {
-                                Import Import = new Import();
-                                Import.CreateDB();
-                                Import.ExcelImport();
-                                CreateFolder();
-                                existingData = true;
+                                try
+                                {
+                                    Import Import = new Import();
+                                    Import.CreateDB();
+                                    Import.ExcelImport();
+                                    CreateFolder();
+                                    existingData = true;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                }
+                                
                             }
                             break;
 
